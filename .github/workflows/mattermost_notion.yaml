@@ -1,0 +1,22 @@
+on:
+  push:
+    branches:
+      - "main"
+  pull_request:
+    branches:
+      - "main"
+    types:
+      - "closed"    
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Create the Mattermost Message
+      run: |
+        message=`git log -1`
+        echo "{\"text\":\"${message}\"}" > mattermost.json
+    - uses: mattermost/action-mattermost-notify@master
+      env:
+        MATTERMOST_WEBHOOK_URL: ${{ secrets.MATTERMOST_NOTION }}
